@@ -38,8 +38,11 @@ jobs:
       #     nosetests -v --with-coverage --cover-package=app
 
       - name: Run tests with pytest and coverage
+        shell: bash
         run: |
           python -m venv venv
-          . venv/bin/activate
-          pip install -r requirements.txt            pip install pytest pytest-cov
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
           pytest -v --cov=app
