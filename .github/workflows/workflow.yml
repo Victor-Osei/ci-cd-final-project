@@ -45,4 +45,5 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
+          export PYTHONPATH=$PYTHONPATH:$(pwd)   # <-- add this line
           pytest -v --cov=app
