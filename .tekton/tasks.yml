@@ -35,30 +35,59 @@ spec:
             rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
           fi
 
+# ---
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   name: nose
+# spec:
+#   workspaces:
+#     - name: source
+#   params:
+#     - name: args
+#       description: Arguments to pass to nose
+#       type: string
+#       default: -v
+#   steps:
+#     - name: nosetests
+#       image: python:3.9-slim
+#       workingDir: $(workspaces.source.path)
+#       script: |
+#           #!/bin/bash
+#           set -e
+#           python -m pip install --upgrade pip wheel
+#           pip install -r requirements.txt
+#           nosetests $(params.args)
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: nose
+  name: pytest
 spec:
   workspaces:
     - name: source
-  params:
-    - name: args
-      description: Arguments to pass to nose
-      type: string
-      default: -v
   steps:
-    - name: nosetests
+    - name: run-tests
       image: python:3.9-slim
       workingDir: $(workspaces.source.path)
       script: |
-          #!/bin/bash
-          set -e
-          python -m pip install --upgrade pip wheel
-          pip install -r requirements.txt
-          nosetests $(params.args)
+        #!/bin/bash
+        set -e
 
+        echo "Install system dependencies"
+        apt-get update && apt-get install -y build-essential
+
+        echo "Fix pip"
+        python -m ensurepip --upgrade
+        python -m pip install --upgrade pip setuptools wheel
+
+        echo "Install requirements"
+        python -m pip install -r requirements.txt
+
+        echo "Run pytest"
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        pytest -v --cov=app
 
 ---
 apiVersion: tekton.dev/v1beta1
