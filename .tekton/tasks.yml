@@ -88,11 +88,12 @@ spec:
         echo "Install test tools"
         python -m pip install pytest pytest-cov
 
+        echo "Set PYTHONPATH"
+        export PYTHONPATH=$(pwd)
+
         echo "Run pytest"
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
         python -m pytest -v --cov=app
-
-
+        
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
