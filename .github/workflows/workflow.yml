@@ -28,10 +28,18 @@ jobs:
       # - name: Run unit tests with nose
       #   run: |
       #     nosetests -v --with-spec --spec-color --with-coverage --cover-package=app      
-      - name: Run tests with coverage
+      
+      # - name: Run tests with coverage
+      #   run: |
+      #     python -m venv venv
+      #     source venv/bin/activate
+      #     pip install -r requirements.txt
+      #     pip install nose coverage
+      #     nosetests -v --with-coverage --cover-package=app
+
+      - name: Run tests with pytest and coverage
         run: |
           python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          pip install nose coverage
-          nosetests -v --with-coverage --cover-package=app
+          . venv/bin/activate
+          pip install -r requirements.txt            pip install pytest pytest-cov
+          pytest -v --cov=app
